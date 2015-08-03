@@ -42,11 +42,26 @@ object Build extends android.AutoBuild {
     versionCode in Android := {
       val df = new java.text.SimpleDateFormat("yyyyMMdd'T'HHmmss")
       Some((df.parse(git.formattedDateVersion.value).getTime / 1000).toInt)
-    }
+    },
+    proguardOptions in Android += "-dontwarn **",
+    scalaVersion := "2.11.7",
+    libraryDependencies ++= Seq(
+      "com.google.android.gms" % "play-services-wearable" % "7.3.0"
+    )
   )
 
-  lazy val application = project.settings(common ++ WearableSupport.settings)
-  lazy val wearable = project.settings(common)
+  lazy val application = project.settings(common ++ WearableSupport.settings ++ Seq(
+    libraryDependencies ++= Seq(
+      "citywasp"     %% "citywasp-api" % "0.2",
+      "com.typesafe" % "config"        % "1.2.1" force() // can not use latest, because it has java8 bytecode
+    ),
+    resolvers += Resolver.bintrayRepo("2m", "maven")
+  ))
+  lazy val wearable = project.settings(common ++ Seq(
+    libraryDependencies ++= Seq(
+      "com.google.android.support" % "wearable" % "1.2.0"
+    )
+  ))
 
   lazy val root = Project(id = "citywasp-android", base = file("."))
     .settings(git.useGitDescribe := true)

@@ -1,5 +1,7 @@
 ## Developing
 
+First of all make sure you are using Java 7.
+
 Setup keystore and key configuration for signing both sub-projects by adding
 
     key.alias: <KEY_ALIAS>
